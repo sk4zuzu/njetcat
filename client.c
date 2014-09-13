@@ -35,7 +35,6 @@ extern int verb;
 
 void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
                                   void (*handle_conn_sock)(int conn_sock)) {
-
     int conn_sock = INVALID;
 
     void handle_error(char *where) {
@@ -101,7 +100,7 @@ void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
              .revents = 0}
         };
         for (;;) {
-            int poll_rslt = poll((struct pollfd *)&fds, 2, INVALID);
+            int poll_rslt = poll(fds, 2, INVALID);
             
             if (poll_rslt == INVALID) {
                 handle_error("do_poll():poll()");
