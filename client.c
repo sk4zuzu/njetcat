@@ -30,7 +30,7 @@
 
 #define INVALID (-1)
 
-static int verb;
+extern int verb;
 
 
 void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
@@ -83,6 +83,11 @@ void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
                                                         sizeof(addr));
         if (conn_rslt == INVALID) {
             handle_error("init_conn_sock():connect()");
+        }
+
+        if (verb) {
+            printf("connected to %s:%d...\n", inet_ntoa(addr.sin_addr),
+                                              ntohs(addr.sin_port));
         }
     }
 
