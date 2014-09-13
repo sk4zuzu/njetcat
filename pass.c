@@ -28,7 +28,7 @@
 extern int chmp;
 
 
-void handle_stdn_fd__proxy(int conn_sock) {
+void handle_stdn_fd__pass(int conn_sock) {
     void handle_error(char *where) {
         int tmp = errno;
         perror(where);
@@ -43,7 +43,7 @@ void handle_stdn_fd__proxy(int conn_sock) {
     int lngt = read(fileno(stdin), line, sizeof(line));
 
     if (lngt == INVALID) {
-        handle_error("handle_stdn_fd__proxy():read()");
+        handle_error("handle_stdn_fd__pass():read()");
     }
 
     line[lngt] = 0;
@@ -55,12 +55,12 @@ void handle_stdn_fd__proxy(int conn_sock) {
     int wrte_rslt = write(conn_sock, line, lngt);
 
     if (wrte_rslt == INVALID) {
-        handle_error("handle_stdn_fd__proxy():write()");
+        handle_error("handle_stdn_fd__pass():write()");
     }
 }
 
 
-void handle_conn_sock__proxy(int conn_sock) {
+void handle_conn_sock__pass(int conn_sock) {
     void handle_error(char *where) {
         int tmp = errno;
         perror(where);
@@ -82,11 +82,11 @@ void handle_conn_sock__proxy(int conn_sock) {
     int lngt = read(conn_sock, line, sizeof(line));
 
     if (lngt == INVALID) {
-        handle_error("handle_conn_sock__proxy():read()");
+        handle_error("handle_conn_sock__pass():read()");
     }
 
     if (lngt == 0) {
-        handle_success("handle_conn_sock__proxy()");
+        handle_success("handle_conn_sock__pass()");
     }
 
     line[lngt] = 0;
@@ -94,7 +94,7 @@ void handle_conn_sock__proxy(int conn_sock) {
     int wrte_rslt = write(fileno(stdout), line, lngt);
 
     if (wrte_rslt == INVALID) {
-        handle_error("handle_conn_sock__proxy():write()");
+        handle_error("handle_conn_sock__pass():write()");
     }
 }
 

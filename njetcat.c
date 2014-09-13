@@ -22,8 +22,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void handle_stdn_fd__proxy(int conn_sock);
-void handle_conn_sock__proxy(int conn_sock);
+void handle_stdn_fd__pass(int conn_sock);
+void handle_conn_sock__pass(int conn_sock);
 void handle_conn_sock__echo(int conn_sock);
 
 void server(int port, void (*handle_stdn_fd)(int conn_sock),
@@ -86,18 +86,18 @@ int main(int argc, char *argv[]) {
     }
     if (srvr) {
         if (port != INVALID) {
-            server(port, handle_stdn_fd__proxy,
+            server(port, handle_stdn_fd__pass,
                           echo ? handle_conn_sock__echo
-                               : handle_conn_sock__proxy);
+                               : handle_conn_sock__pass);
         } else {
             print_usage_and_exit();
         }
     } else {
         if (argc - optind == 2) {
             client(argv[optind], atoi(argv[optind + 1]),
-                    handle_stdn_fd__proxy,
+                    handle_stdn_fd__pass,
                           echo ? handle_conn_sock__echo
-                               : handle_conn_sock__proxy);
+                               : handle_conn_sock__pass);
         } else {
             print_usage_and_exit();
         }
