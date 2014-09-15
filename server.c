@@ -1,5 +1,5 @@
 //
-// NJETCAT 0.3 20140912 copyright sk4zuzu@gmail.com 2014
+// NJETCAT 0.5 20140915 copyright sk4zuzu@gmail.com 2014
 //
 // This file is part of NJETCAT.
 //
@@ -24,12 +24,13 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <errno.h>
 
 #define INVALID (-1)
 
 extern int verb;
-
+extern int nodl;
 
 void server(int port, void (*handle_stdn_fd)(int conn_sock),
                       void (*handle_conn_sock)(int conn_sock)) {
@@ -66,12 +67,6 @@ void server(int port, void (*handle_stdn_fd)(int conn_sock),
             handle_error("init_lstn_sock():socket()");
         }
 
-        struct sockaddr_in addr = {
-            .sin_family = AF_INET,
-            .sin_port   = htons(port),
-            .sin_addr   = INADDR_ANY
-        };
-
         int sopt_vlue = 1;
         int sopt_rslt = setsockopt(lstn_sock, SOL_SOCKET,
                                             SO_REUSEADDR, &sopt_vlue,
@@ -79,6 +74,12 @@ void server(int port, void (*handle_stdn_fd)(int conn_sock),
         if (sopt_rslt == INVALID) {
             handle_error("init_lstn_sock():setsockopt()");
         }
+
+        struct sockaddr_in addr = {
+            .sin_family = AF_INET,
+            .sin_port   = htons(port),
+            .sin_addr   = INADDR_ANY
+        };
 
         int bind_rslt = bind(lstn_sock, (struct sockaddr *)&addr,
                                                      sizeof(addr));
@@ -107,13 +108,22 @@ void server(int port, void (*handle_stdn_fd)(int conn_sock),
             handle_error("init_conn_sock():accept()");
         }
 
+        close(lstn_sock);
+
+        if (nodl) {
+            int sopt_vlue = 1;
+            int sopt_rslt = setsockopt(conn_sock, IPPROTO_TCP,
+                                                  TCP_NODELAY, &sopt_vlue,
+                                                         sizeof(sopt_vlue));
+            if (sopt_rslt == INVALID) {
+                handle_error("init_conn_sock():setsockopt()");
+            }
+        }
+
         if (verb) {
             printf("connection from %s:%d...\n", inet_ntoa(addr.sin_addr),
                                                      ntohs(addr.sin_port));
         }
-
-        close(lstn_sock);
-        lstn_sock = INVALID;
     }
 
     void do_poll() {

@@ -1,5 +1,5 @@
 //
-// NJETCAT 0.3 20140912 copyright sk4zuzu@gmail.com 2014
+// NJETCAT 0.5 20140915 copyright sk4zuzu@gmail.com 2014
 //
 // This file is part of NJETCAT.
 //
@@ -25,16 +25,18 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <netdb.h>
 #include <errno.h>
 
 #define INVALID (-1)
 
 extern int verb;
-
+extern int nodl;
 
 void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
                                   void (*handle_conn_sock)(int conn_sock)) {
+
     int conn_sock = INVALID;
 
     void handle_error(char *where) {
@@ -68,6 +70,16 @@ void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
 
         if (conn_sock == INVALID) {
             handle_error("init_conn_sock():socket()");
+        }
+
+        if (nodl) {
+            int sopt_vlue = 1;
+            int sopt_rslt = setsockopt(conn_sock, IPPROTO_TCP,
+                                                  TCP_NODELAY, &sopt_vlue,
+                                                         sizeof(sopt_vlue));
+            if (sopt_rslt == INVALID) {
+                handle_error("init_conn_sock():setsockopt()");
+            }
         }
 
         struct sockaddr_in addr = {

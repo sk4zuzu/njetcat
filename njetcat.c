@@ -1,5 +1,5 @@
 //
-// NJETCAT 0.3 20140912 copyright sk4zuzu@gmail.com 2014
+// NJETCAT 0.5 20140915 copyright sk4zuzu@gmail.com 2014
 //
 // This file is part of NJETCAT.
 //
@@ -36,11 +36,11 @@ void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
 int verb = 0;
 int chmp = 0;
 int echo = 0;
-
+int nodl = 0;
 
 int main(int argc, char *argv[]) {
     void print_usage_and_exit() {
-        printf("Usage: %s [-h] [-V] [-v] [-E] [-C] [-l] [-p port]"
+        printf("Usage: %s [-h] [-V] [-v] [-E] [-C] [-N] [-l] [-p port]"
                                                        " hostname port\n"
                "    -h       show help\n"
                "    -V       show version\n"
@@ -48,18 +48,19 @@ int main(int argc, char *argv[]) {
                "    -E       enable echo mode\n"
                "    -C       chomp newline from stdin\n"
                "    -l       enable server mode\n"
+               "    -N       enable TCP_NODELAY\n"
                "    -p port  provide port for server mode\n", argv[0]);
         exit(0);
     }
     void print_version_and_exit() {
-        printf("%s\n","NJETCAT 0.4 20140913 copyright sk4zuzu@gmail.com 2014");
+        printf("%s\n","NJETCAT 0.5 20140915 copyright sk4zuzu@gmail.com 2014");
         exit(0);
     }
 
     int srvr = 0,
         port = INVALID,
         opt;
-    while ((opt = getopt(argc, argv, "hVvEClp:")) != INVALID) {
+    while ((opt = getopt(argc, argv, "hVvEClNp:")) != INVALID) {
         switch (opt) {
             case 'h':
                 print_usage_and_exit();
@@ -76,6 +77,9 @@ int main(int argc, char *argv[]) {
                 break;
             case 'l':
                 srvr = 1;
+                break;
+            case 'N':
+                nodl = 1;
                 break;
             case 'p':
                 port = atoi(optarg);

@@ -1,5 +1,5 @@
 //
-// NJETCAT 0.3 20140912 copyright sk4zuzu@gmail.com 2014
+// NJETCAT 0.5 20140915 copyright sk4zuzu@gmail.com 2014
 //
 // This file is part of NJETCAT.
 //
@@ -26,7 +26,6 @@
 #define MAX_BLOB (4096)
 
 extern int chmp;
-
 
 void handle_stdn_fd__pass(int conn_sock) {
     void handle_error(char *where) {
