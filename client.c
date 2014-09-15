@@ -48,7 +48,7 @@ void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
         exit(tmp);
     }
 
-    void handle_success(char *where) {
+    void handle_success() {
         if (conn_sock != INVALID) {
             close(conn_sock);
         }
@@ -121,9 +121,12 @@ void client(char *host, int port, void (*handle_stdn_fd)(int conn_sock),
             if (fds[0].revents & POLLIN) {
                 handle_conn_sock(conn_sock);
             }
-            else
             if (fds[1].revents & POLLIN) {
                 handle_stdn_fd(conn_sock);
+            }
+
+            if (fds[1].revents & POLLHUP) {
+                handle_success();
             }
         }
     }

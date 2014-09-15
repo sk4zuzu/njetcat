@@ -50,7 +50,7 @@ void server(int port, void (*handle_stdn_fd)(int conn_sock),
         exit(tmp);
     }
 
-    void handle_success(char *where) {
+    void handle_success() {
         if (lstn_sock != INVALID) {
             close(lstn_sock);
         }
@@ -109,6 +109,7 @@ void server(int port, void (*handle_stdn_fd)(int conn_sock),
         }
 
         close(lstn_sock);
+        lstn_sock = INVALID;
 
         if (nodl) {
             int sopt_vlue = 1;
@@ -145,9 +146,12 @@ void server(int port, void (*handle_stdn_fd)(int conn_sock),
             if (fds[0].revents & POLLIN) {
                 handle_conn_sock(conn_sock);
             }
-            else
             if (fds[1].revents & POLLIN) {
                 handle_stdn_fd(conn_sock);
+            }
+
+            if (fds[1].revents & POLLHUP) {
+                handle_success();
             }
         }
     }

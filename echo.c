@@ -37,7 +37,7 @@ void handle_conn_sock__echo(int conn_sock) {
         exit(tmp);
     }
 
-    void handle_success(char *where) {
+    void handle_success() {
         if (conn_sock != INVALID) {
             close(conn_sock);
         }
@@ -53,7 +53,7 @@ void handle_conn_sock__echo(int conn_sock) {
     }
 
     if (lngt == 0) {
-        handle_success("handle_conn_sock__echo()");
+        handle_success();
     }
 
     line[lngt] = 0;
