@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
                "    -V       show version\n"
                "    -v       be verbose\n"
                "    -E       enable echo mode\n"
-               "    -c       chomp newline from stdin\n"
+               "    -C       chomp newline from stdin\n"
                "    -l       enable server mode\n"
                "    -p port  provide port for server mode\n", argv[0]);
         exit(0);
